@@ -1,221 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
 :root{
-  --soman-blue:#004795; 
-  --light-gray:#f2f4f7; 
-  --dark-gray:#333; 
+  --soman-blue:#004795;
+  --light-gray:#f2f4f7;
+  --dark-gray:#333;
   --text-gray:#555;
-  --white:#fff; 
+  --white:#fff;
   --border-color:#e5e8eb;
 }
 
-/* ===== 기본 ===== */
-body {
+/* 공통 */
+*{box-sizing:border-box}
+body{
   font-family:'Noto Sans KR',sans-serif;
   background:var(--light-gray);
   margin:0;
   word-break:keep-all;
   text-align:center;
 }
+.hide{display:none !important}
 
-.hide { display:none !important; }
-
-.page-wrapper {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  padding:20px;
-  box-sizing:border-box;
-}
-
-.main-card {
+/* 시작/질문 공통 카드 */
+.page-wrapper{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.main-card{
   background:var(--white);
   border-radius:20px;
   padding:30px;
   box-shadow:0 4px 20px rgba(0,0,0,.08);
-  width:100%;
-  max-width:380px;
-  box-sizing:border-box;
+  width:100%;max-width:380px;
 }
 
-/* ===== 시작 페이지 ===== */
-#start-page {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+/* 시작 페이지 */
+#start-page{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.logo-img{width:180px;margin:0 auto 10px}
+.main-img{width:180px;height:180px;object-fit:contain;margin:15px auto}
+.start-btn{
+  background:var(--soman-blue);color:#fff;border:none;margin-top:20px;
+  border-radius:12px;padding:16px 30px;font-weight:700;cursor:pointer
 }
+.start-btn:hover{background:#00336a}
 
-.logo-img {
-  width:180px;
-  margin:0 auto 10px;
+/* 질문 페이지 */
+#qna-page{display:flex;flex-direction:column;justify-content:space-between;min-height:560px}
+.status-bar{display:flex;align-items:center;margin-bottom:20px;gap:15px;width:100%}
+.progress{flex:1;height:12px;background:#e9ecef;border-radius:10px}
+.progress-bar{width:0;height:100%;background:var(--soman-blue);border-radius:10px;transition:width .4s}
+.q-counter{font-size:14px;font-weight:700;color:var(--soman-blue)}
+#question-title{
+  color:var(--soman-blue);                 /* 요청: 질문 제목 블루 */
+  min-height:84px;display:flex;align-items:center;justify-content:center;text-align:center
 }
+.answer-box{display:flex;flex-direction:column;gap:12px;width:100%}
+.answer-btn{
+  font:500 16px 'Noto Sans KR',sans-serif; /* 보기 글씨체/두께 정리 */
+  background:#fff;color:var(--dark-gray);
+  padding:18px 16px;border:1.5px solid var(--border-color);
+  border-radius:12px;min-height:64px;line-height:1.55;
+  display:flex;align-items:center;justify-content:center;white-space:normal
+}
+.answer-btn:hover{border-color:var(--soman-blue);box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.qna-footer{width:100%;padding-top:20px;text-align:left}
+#back-btn{
+  appearance:none;background:#fff;color:var(--soman-blue);
+  border:1.5px solid var(--soman-blue);border-radius:10px;
+  padding:8px 12px;font:500 14px 'Noto Sans KR',sans-serif;  /* ‘이전’ 버튼 톤/서체 */
+}
+#back-btn:hover{background:#f1f6ff}
 
-.main-img {
-  width:180px;
-  height:180px;
-  object-fit:contain;
-  margin:15px auto;
-}
+/* 결과 컨테이너 */
+.container{width:100%;max-width:380px;padding:0 10px;margin:auto}
+#result-page{padding:40px 0}
 
-.start-btn {
-  background:var(--soman-blue);
-  color:#fff;
-  border:none;
-  margin-top:20px;
-  border-radius:12px;
-  padding:16px 30px;
-  font-weight:700;
-  cursor:pointer;
+/* 결과 카드 */
+.result-card{
+  background:var(--white);border-radius:20px;padding:30px;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);width:100%;margin-bottom:20px;text-align:left
 }
-.start-btn:hover { background:#00336a; }
+#result-summary{font-size:14px;color:var(--soman-blue);font-weight:700;margin:0 0 8px}
+#result-type{color:var(--dark-gray);font-size:28px;margin:0 0 6px;font-weight:700;line-height:1.25;text-align:left}
+#result-type .en-sub{display:block;font-size:16px;color:var(--text-gray);font-weight:500;margin-top:4px}
+/* 결과 메인 이미지 크기 안정화 */
+.result-mascot{display:flex;justify-content:center;align-items:center}
+.result-mascot img{width:180px;height:180px;object-fit:contain;display:block;margin:8px auto}
 
-/* ===== 질문 페이지 ===== */
-#qna-page.main-card { min-height:560px; }
+/* 태그 */
+.tags-box{margin:18px 0;display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-block;background:#eaf0f8;color:var(--soman-blue);font-size:13px;padding:6px 10px;border-radius:999px}
 
-#question-title {
-  min-height:84px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
+/* 설명 */
+.desc-box{background:#f8f9fb;border-radius:14px;padding:20px;margin:18px 0}
+.desc-box p{color:var(--dark-gray);font-size:15px;line-height:1.7;text-align:left}
 
-.answer-box {
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+/* 추천 솔루션: 하얀 박스 + 좌측정렬 */
+.recommend-box{
+  margin-top:12px;padding:14px 16px;border-radius:16px;background:#fff;
+  border:1px solid var(--border-color);box-shadow:0 4px 15px rgba(0,0,0,.05);
+  color:var(--dark-gray);text-align:left
 }
-.answer-btn {
-  min-height:64px;
-  padding:18px 16px;
-  line-height:1.5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  white-space:normal;
-  word-break:keep-all;
-  border:1px solid var(--border-color);
-  border-radius:12px;
-  background:#fff;
-  cursor:pointer;
-}
-.answer-btn:hover {
-  border-color:var(--soman-blue);
-  color:var(--soman-blue);
-}
+.recommend-box strong{color:var(--soman-blue)}
 
-/* ===== 결과 페이지 ===== */
-#result-page {
-  padding:40px 0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+/* 케미 섹션 */
+.match-section{padding:30px}
+.match-box{display:grid;grid-template-columns:1fr 1fr;gap:15px;align-items:stretch}
+.match-item{
+  flex:1;padding:18px 12px;border-radius:16px;background:#fff;
+  box-shadow:0 4px 15px rgba(0,0,0,.05);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px
 }
+/* 제목: 하트까지 한 줄 들어가도록 축소 + 한줄고정 */
+.match-item h4{
+  margin:0 0 6px;font-weight:800;color:var(--soman-blue);
+  font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; /* 한 줄 고정 */
+}
+/* 케미 이미지 */
+.match-mascot img{width:72px;height:72px;object-fit:contain;display:block;margin:6px auto 8px}
+.match-text{text-align:center}
+.match-item span{font-size:14px;font-weight:700;color:var(--dark-gray)}
 
-.result-card {
-  background:var(--white);
-  border-radius:20px;
-  padding:30px;
-  box-shadow:0 4px 20px rgba(0,0,0,.08);
-  width:100%;
-  max-width:380px;
-  margin-bottom:20px;
-  text-align:center;
-  box-sizing:border-box; /* 폭 계산 안정화 */
-}
+/* 하단 버튼(폭 정렬) */
+.result-footer{display:flex;flex-direction:column;gap:12px;width:100%;margin-top:20px;padding:0 30px}
+.result-footer button{width:100%;padding:18px 24px;border-radius:14px;font-size:15px;font-weight:600;border:1.5px solid var(--soman-blue)}
+.result-footer .btn-secondary{background:#fff;color:var(--soman-blue)}
+.result-footer .btn-primary{background:var(--soman-blue);color:#fff}
+.result-footer button:hover{opacity:.95}
 
-.result-mascot {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.result-mascot img {
-  width:180px;
-  height:180px;
-  object-fit:contain;
-  display:block;
-}
-
-.tags-box {
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin:15px 0;
-}
-.tag {
-  background:var(--light-gray);
-  padding:4px 8px;
-  border-radius:8px;
-  font-size:0.85rem;
-  color:var(--text-gray);
-}
-
-.desc-box p { text-align:left; }
-
-.recommend-box {
-  border:2px solid var(--soman-blue);
-  border-radius:12px;
-  padding:10px;
-  margin-top:20px;
-}
-
-.match-section { padding:30px; }
-
-.match-box {
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-}
-
-.match-item {
-  flex:1;
-  background:var(--light-gray);
-  border-radius:12px;
-  padding:10px;
-}
-
-.match-item h4 {
-  font-size:1rem;
-  margin-bottom:10px;
-}
-
-.match-mascot img {
-  width:72px;
-  height:72px;
-  object-fit:contain;
-  display:block;
-  margin:6px auto 8px;
-}
-
-.match-text span { font-weight:600; }
-
-.result-footer {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.result-footer button {
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  font-weight:700;
-  cursor:pointer;
-}
-.btn-primary {
-  background:var(--soman-blue);
-  color:#fff;
-}
-.btn-secondary {
-  background:#eee;
-  color:var(--dark-gray);
-}
-
-/* ===== 마지막 페이지 좌우 잘림 방지 ===== */
-html, body { overflow-x: hidden; }
-.container,
-#result-page { 
-  padding-left: max(10px, env(safe-area-inset-left));
-  padding-right: max(10px, env(safe-area-inset-right));
-}
+/* 푸터 */
+.footer{width:100%;padding:20px 0;font-size:12px;color:#9aa3ad;text-align:center;letter-spacing:.5px}
