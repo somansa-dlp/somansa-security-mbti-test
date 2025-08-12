@@ -1,3 +1,6 @@
+// ===== 결과 저장용 GAS 엔드포인트 (이전 사용 URL 복구) =====
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCoTyLm6AS1TZhwEL4WJUV3ioXG0jCB5VrP0UsSgN4vkTWdCRMYQo5qgxncEkztgdu/exec';
+
 const cardWrapper=document.getElementById('card-wrapper');
 const resultContainer=document.getElementById('result-container');
 const startPage=document.getElementById('start-page');
@@ -37,7 +40,7 @@ window.onload = function() {
   const urlParams = new URLSearchParams(window.location.search);
   const resultType = urlParams.get('result');
   if (resultType && results[resultType]) {
-    showResult(resultType);
+    showResult(resultType); // 공유 링크로 진입 시: 저장하지 않음
   }
 };
 
@@ -65,7 +68,7 @@ function selectAnswer(answerIndex) {
 
   if (currentQuestionIndex === questions.length) {
     progressBar.style.width = '100%';
-    setTimeout(() => showResult(), 400);
+    setTimeout(() => showResult(), 300);
   } else {
     showQuestion();
   }
@@ -77,19 +80,27 @@ function goBack() {
   showQuestion();
 }
 
+function buildScore() {
+  const score = { S: 0, A: 0, T: 0, P: 0 };
+  userAnswers.forEach(a => { if (a) score[a]++; });
+  return score;
+}
+
 function showResult(resultTypeFromUrl = null) {
   cardWrapper.classList.add('hide');
   resultContainer.classList.remove('hide');
 
   let finalType;
+  let shouldSave = false;
+
   if (resultTypeFromUrl) {
     finalType = resultTypeFromUrl;
   } else {
-    let score = { S: 0, A: 0, T: 0, P: 0 };
-    userAnswers.forEach(answer => { if (answer) score[answer]++; });
+    const score = buildScore();
     const firstChar = score.S >= score.A ? 'S' : 'A';
     const secondChar = score.T >= score.P ? 'T' : 'P';
     finalType = firstChar + secondChar;
+    shouldSave = true; // 새로 완주한 경우만 저장
   }
 
   currentResultType = finalType;
@@ -97,6 +108,12 @@ function showResult(resultTypeFromUrl = null) {
   const bestMatch = results[result.best_code];
   const worstMatch = results[result.worst_code];
 
+  // 저장 로직 (localStorage + GAS)
+  if (shouldSave) {
+    persistResult(finalType);
+  }
+
+  // 렌더
   resultPage.innerHTML = `
     <div class="result-card">
       <h3 id="result-summary">${result.summary}</h3>
@@ -129,7 +146,41 @@ function showResult(resultTypeFromUrl = null) {
   `;
 }
 
-/* 현재 페이지 그대로 공유 (결과 타입 쿼리 포함) */
+/* 결과 저장: localStorage + Google Apps Script */
+function persistResult(finalType) {
+  const score = buildScore();
+  const payload = {
+    ts: new Date().toISOString(),
+    finalType,
+    finalName: results[finalType]?.name || '',
+    answers: userAnswers.slice(),
+    score,                       // {S,A,T,P}
+    ua: navigator.userAgent || '',
+    ref: location.href
+  };
+
+  // 1) localStorage 백업
+  try {
+    const key = 'securiti_result_history';
+    const history = JSON.parse(localStorage.getItem(key) || '[]');
+    history.push(payload);
+    localStorage.setItem(key, JSON.stringify(history));
+  } catch(e) { /* 로컬스토리지 실패는 무시 */ }
+
+  // 2) Google Apps Script 전송 (CORS 무시, 실패해도 화면 영향 없음)
+  if (SCRIPT_URL) {
+    try {
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    } catch(e) { /* 전송 실패 무시 */ }
+  }
+}
+
+/* 현재 페이지 공유 (결과 타입 쿼리 포함) */
 function shareResult() {
   const url = new URL(window.location.href);
   if (currentResultType) url.searchParams.set('result', currentResultType);
