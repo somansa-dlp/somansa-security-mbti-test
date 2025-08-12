@@ -1,5 +1,5 @@
 // ===== 결과 저장용 GAS 엔드포인트 (이전 사용 URL 복구) =====
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCoTyLm6AS1TZhwEL4WJUV3ioXG0jCB5VrP0UsSgN4vkTWdCRMYQo5qgxncEkztgdu/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxIsRSPNUfnq6R0P_cNmaGBs_gFbkHKbniQpLJ_zvqvmj8OKzAGf5S2PjVQAK1EJt_/exec';
 
 const cardWrapper=document.getElementById('card-wrapper');
 const resultContainer=document.getElementById('result-container');
@@ -215,3 +215,4 @@ function restartTest() {
   startPage.classList.remove('hide');
   qnaPage.classList.add('hide');
 }
+
