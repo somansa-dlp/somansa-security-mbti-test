@@ -146,15 +146,15 @@ function showResult(resultTypeFromUrl = null) {
   `;
 }
 
-/* 결과 저장: localStorage + Google Apps Script */
+/* 결과 저장: localStorage + Google Apps Script (폼 인코딩) */
 function persistResult(finalType) {
   const score = buildScore();
   const payload = {
     ts: new Date().toISOString(),
     finalType,
     finalName: results[finalType]?.name || '',
-    answers: userAnswers.slice(),
-    score,                       // {S,A,T,P}
+    answers: JSON.stringify(userAnswers.slice()), // 문자열로 보내기
+    score: JSON.stringify(score),                 // 문자열로 보내기
     ua: navigator.userAgent || '',
     ref: location.href
   };
@@ -165,20 +165,24 @@ function persistResult(finalType) {
     const history = JSON.parse(localStorage.getItem(key) || '[]');
     history.push(payload);
     localStorage.setItem(key, JSON.stringify(history));
-  } catch(e) { /* 로컬스토리지 실패는 무시 */ }
+  } catch (e) { /* ignore */ }
 
-  // 2) Google Apps Script 전송 (CORS 무시, 실패해도 화면 영향 없음)
-  if (SCRIPT_URL) {
-    try {
+  // 2) GAS 전송: URL-Encoded (GAS e.parameter로 수신)
+  try {
+    const params = new URLSearchParams(payload); // 자동으로 x-www-form-urlencoded
+    // sendBeacon 먼저 시도(브라우저가 페이지 이동해도 안전하게 전송)
+    const beaconOk = navigator.sendBeacon && navigator.sendBeacon(SCRIPT_URL, params);
+    if (!beaconOk) {
+      // fallback: fetch no-cors (응답은 안 보이지만 서버엔 도달)
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: params  // 헤더 명시하지 않음 → 브라우저가 적절히 설정
       }).catch(() => {});
-    } catch(e) { /* 전송 실패 무시 */ }
-  }
+    }
+  } catch (e) { /* ignore */ }
 }
+
 
 /* 현재 페이지 공유 (결과 타입 쿼리 포함) */
 function shareResult() {
@@ -215,4 +219,5 @@ function restartTest() {
   startPage.classList.remove('hide');
   qnaPage.classList.add('hide');
 }
+
 
