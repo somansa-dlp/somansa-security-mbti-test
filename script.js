@@ -1,16 +1,16 @@
-// ===== 결과 저장용 GAS 엔드포인트 (이전 사용 URL 복구) =====
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxIsRSPNUfnq6R0P_cNmaGBs_gFbkHKbniQpLJ_zvqvmj8OKzAGf5S2PjVQAK1EJt_/exec';
+// === 결과 저장용 GAS 엔드포인트 ===
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkOzTyUyU4H-GG5w8Vho_V2b59zRuN4jhyV8d4lRE7pdWMg1HtTcLjjT5zh3ywBKck/exec';
 
-const cardWrapper=document.getElementById('card-wrapper');
-const resultContainer=document.getElementById('result-container');
-const startPage=document.getElementById('start-page');
-const qnaPage=document.getElementById('qna-page');
-const resultPage=document.getElementById('result-page');
-const questionTitle=document.getElementById('question-title');
-const answerBtns=document.querySelectorAll('.answer-btn');
-const progressBar=document.querySelector('.progress-bar');
-const backBtn=document.getElementById('back-btn');
-const qCounter=document.getElementById('q-counter');
+const cardWrapper = document.getElementById('card-wrapper');
+const resultContainer = document.getElementById('result-container');
+const startPage = document.getElementById('start-page');
+const qnaPage = document.getElementById('qna-page');
+const resultPage = document.getElementById('result-page');
+const questionTitle = document.getElementById('question-title');
+const answerBtns = document.querySelectorAll('.answer-btn');
+const progressBar = document.querySelector('.progress-bar');
+const backBtn = document.getElementById('back-btn');
+const qCounter = document.getElementById('q-counter');
 
 const questions = [
   { q: '회사 PC에 새로운 앱을 설치할 때 나는?', a: [{ text: '권한 확인하고 문제 없는 것 같으면<br>설치해버린다.', type: 'A' }, { text: '회사에서 허락 안 한 건 설치 안 하고,<br>다른 허용된 프로그램을 찾아본다.', type: 'S' }] },
@@ -26,21 +26,21 @@ const questions = [
 ];
 
 const results = {
-  ST: { name: "보안 설계자", sub: "The Architect", theme: "architect", mascot: "bee.png", summary: "시스템과 기술로 제어하는", tags: ["#정책우선", "#자동화", "#중앙통제", "#기술신뢰", "#데이터는_거짓말_안해"], desc: "보안은 잘 짜인 시스템과 자동화된 기술로 완성된다고 믿습니다. 명확한 정책을 수립하고, 강력한 기술적 통제로 사람이 개입할 여지를 최소화하여 잠재적 위협을 원천 차단하는 것을 가장 중요하게 생각합니다.", solution: "Webkeeper", best_code: "SP", worst_code: "AP" },
-  SP: { name: "규정 수호자", sub: "The Guardian", theme: "guardian", mascot: "guardian.png", summary: "시스템과 사람으로 완성하는", tags: ["#규정수호", "#프로세스", "#가이드라인", "#협업", "#사람이_우선"], desc: "잘 만든 정책과 규정, 그리고 그것을 따르는 사람들의 노력이 합쳐질 때 가장 안전하다고 믿습니다. 기술은 보조적인 수단이며, 결국 보안은 사람이 만들어나가는 문화이자 프로세스라고 생각합니다. 당신의 꼼꼼함이 모두를 구원합니다.", solution: "Privacy-i", best_code: "ST", worst_code: "AT" },
-  AT: { name: "기술 해결사", sub: "The Specialist", theme: "specialist", mascot: "specialist.png", summary: "전문가의 기술로 해결하는", tags: ["#기술전문가", "#핸즈온", "#위기대응", "#실용주의", "#답답한건_못참아"], desc: "규정이나 정책보다 현장에서의 기술적인 판단과 대응 능력이 더 중요하다고 믿습니다. 어떤 위협이든 깊이 있는 기술 전문성으로 분석하고 해결할 수 있다는 자신감을 가지고 있으며, 실제 상황에서의 빠른 조치를 선호합니다.", solution: "Privacy-i EDR", best_code: "AP", worst_code: "SP" },
-  AP: { name: "보안 어드바이저", sub: "The Advisor", theme: "advisor", mascot: "advisor.png", summary: "전문가의 소통으로 해결하는", tags: ["#소통중심", "#어드바이저", "#유연함", "#리스크관리", "#좋은게_좋은거지"], desc: "보안은 무조건 막는 것이 아니라, 비즈니스와 사람을 이해하며 위험을 '관리'하는 과정이라고 생각합니다. 동료들과의 소통을 통해 현실적인 대안을 찾고, 모두가 만족할 수 있는 접점을 만들어내는 역할에 가장 큰 가치를 둡니다.", solution: "Server-i", best_code: "AT", worst_code: "ST" }
+  ST: { name: "보안 설계자", sub: "The Architect", theme: "architect", mascot: "bee.png", summary: "시스템과 기술로 제어하는", tags: ["#정책우선", "#자동화", "#중앙통제", "#기술신뢰", "#데이터는_거짓말_안해"], desc: "보안은 잘 짜인 시스템과 자동화된 기술로 완성된다고 믿습니다.", solution: "Webkeeper", best_code: "SP", worst_code: "AP" },
+  SP: { name: "규정 수호자", sub: "The Guardian", theme: "guardian", mascot: "guardian.png", summary: "시스템과 사람으로 완성하는", tags: ["#규정수호", "#프로세스", "#가이드라인", "#협업", "#사람이_우선"], desc: "잘 만든 정책과 규정, 그리고 그것을 따르는 사람들의 노력이 합쳐질 때 가장 안전하다고 믿습니다.", solution: "Privacy-i", best_code: "ST", worst_code: "AT" },
+  AT: { name: "기술 해결사", sub: "The Specialist", theme: "specialist", mascot: "specialist.png", summary: "전문가의 기술로 해결하는", tags: ["#기술전문가", "#핸즈온", "#위기대응", "#실용주의", "#답답한건_못참아"], desc: "규정이나 정책보다 현장에서의 기술적인 판단과 대응 능력이 더 중요하다고 믿습니다.", solution: "Privacy-i EDR", best_code: "AP", worst_code: "SP" },
+  AP: { name: "보안 어드바이저", sub: "The Advisor", theme: "advisor", mascot: "advisor.png", summary: "전문가의 소통으로 해결하는", tags: ["#소통중심", "#어드바이저", "#유연함", "#리스크관리", "#좋은게_좋은거지"], desc: "보안은 무조건 막는 것이 아니라, 비즈니스와 사람을 이해하며 위험을 '관리'하는 과정이라고 생각합니다.", solution: "Server-i", best_code: "AT", worst_code: "ST" }
 };
 
 let currentQuestionIndex = 0;
 let userAnswers = new Array(questions.length).fill(null);
 let currentResultType = '';
 
-window.onload = function() {
+window.onload = function () {
   const urlParams = new URLSearchParams(window.location.search);
   const resultType = urlParams.get('result');
   if (resultType && results[resultType]) {
-    showResult(resultType); // 공유 링크로 진입 시: 저장하지 않음
+    showResult(resultType);
   }
 };
 
@@ -100,7 +100,7 @@ function showResult(resultTypeFromUrl = null) {
     const firstChar = score.S >= score.A ? 'S' : 'A';
     const secondChar = score.T >= score.P ? 'T' : 'P';
     finalType = firstChar + secondChar;
-    shouldSave = true; // 새로 완주한 경우만 저장
+    shouldSave = true;
   }
 
   currentResultType = finalType;
@@ -108,12 +108,10 @@ function showResult(resultTypeFromUrl = null) {
   const bestMatch = results[result.best_code];
   const worstMatch = results[result.worst_code];
 
-  // 저장 로직 (localStorage + GAS)
   if (shouldSave) {
     persistResult(finalType);
   }
 
-  // 렌더
   resultPage.innerHTML = `
     <div class="result-card">
       <h3 id="result-summary">${result.summary}</h3>
@@ -146,45 +144,43 @@ function showResult(resultTypeFromUrl = null) {
   `;
 }
 
-/* 결과 저장: localStorage + Google Apps Script (폼 인코딩) */
+/* 결과 저장: localStorage + Google Apps Script(JSON 본문) */
 function persistResult(finalType) {
   const score = buildScore();
   const payload = {
-    ts: new Date().toISOString(),
-    finalType,
+    result: finalType,
     finalName: results[finalType]?.name || '',
-    answers: JSON.stringify(userAnswers.slice()), // 문자열로 보내기
-    score: JSON.stringify(score),                 // 문자열로 보내기
+    ts: new Date().toISOString(),
+    answers: userAnswers.slice(),
+    score: score,
     ua: navigator.userAgent || '',
     ref: location.href
   };
 
-  // 1) localStorage 백업
   try {
     const key = 'securiti_result_history';
     const history = JSON.parse(localStorage.getItem(key) || '[]');
     history.push(payload);
     localStorage.setItem(key, JSON.stringify(history));
-  } catch (e) { /* ignore */ }
+  } catch {}
 
-  // 2) GAS 전송: URL-Encoded (GAS e.parameter로 수신)
   try {
-    const params = new URLSearchParams(payload); // 자동으로 x-www-form-urlencoded
-    // sendBeacon 먼저 시도(브라우저가 페이지 이동해도 안전하게 전송)
-    const beaconOk = navigator.sendBeacon && navigator.sendBeacon(SCRIPT_URL, params);
+    const beaconOk = navigator.sendBeacon &&
+      navigator.sendBeacon(
+        SCRIPT_URL,
+        new Blob([JSON.stringify(payload)], { type: 'text/plain' })
+      );
+
     if (!beaconOk) {
-      // fallback: fetch no-cors (응답은 안 보이지만 서버엔 도달)
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: params  // 헤더 명시하지 않음 → 브라우저가 적절히 설정
-      }).catch(() => {});
+        body: JSON.stringify(payload)
+      }).catch(()=>{});
     }
-  } catch (e) { /* ignore */ }
+  } catch {}
 }
 
-
-/* 현재 페이지 공유 (결과 타입 쿼리 포함) */
 function shareResult() {
   const url = new URL(window.location.href);
   if (currentResultType) url.searchParams.set('result', currentResultType);
@@ -202,12 +198,12 @@ function shareResult() {
 
 function copyToClipboard(text) {
   try {
-    navigator.clipboard.writeText(text).then(() => alert('링크가 복사되었습니다. 원하는 곳에 붙여넣기 해주세요.'));
+    navigator.clipboard.writeText(text).then(() => alert('링크가 복사되었습니다.'));
   } catch {
     const ta = document.createElement('textarea');
     ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
-    alert('링크가 복사되었습니다. 원하는 곳에 붙여넣기 해주세요.');
+    alert('링크가 복사되었습니다.');
   }
 }
 
@@ -219,5 +215,3 @@ function restartTest() {
   startPage.classList.remove('hide');
   qnaPage.classList.add('hide');
 }
-
-
